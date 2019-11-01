@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from openpyxl import Workbook
 import time
 
+book = Workbook()
 
 
 # soup = BeautifulSoup(html_doc, 'html.parser')
@@ -65,28 +66,49 @@ for url in country_urls:
 
     output = soup2.find('table', style="border: 5px #ccc solid;", width="774", cellpadding="10")
 
+    country_element = soup2.find('p', id="heading")
+
+
+    # print( country_element.text )
+
     if not output:
         output = soup2.find('table', id="t2")
 
-    output1 = output.find_all('tr')        
+    rows = [
+    ('id','BankName', 'City', 'Branch', 'SwiftCode',	'Country', 'logourl', 'websiteurl', 'national identifier', 'bank routing scheme', 'bank routing address' )
+    ]
 
-    for out in output1[1:]:
-        # sp = BeautifulSoup(out, "lxml")
-        tds = out.find_all('td')
-        # print( tds )
+    book.create_sheet(country_element.text)
+    sheet = book.get_sheet_by_name(country_element.text)
 
-        for td in tds:
-            print( td.text )
+    try:
+        output1 = output.find_all('tr')    
+    except AttributeError:
+        continue
+
+    if output1:
+        for out in output1[1:]:
+            # sp = BeautifulSoup(out, "lxml")
+            tds = out.find_all('td')
+            # print( tds )
+
+            # for td in tds:
+            record = (tds[0].text,tds[1].text, tds[2].text, tds[3].text, tds[4].text, country_element.text, None, None, None, None, None )
+            rows.append( record )
+                # print( td.text )
     
+    for row in rows:
+        sheet.append(row)
+# sheet = book.active
 
-book = Workbook()
-sheet = book.active
 
-sheet['A1'] = 56
-sheet['A2'] = 43
+# book.create_sheet("April")
 
-now = time.strftime("%x")
-sheet['A3'] = now
+# sheet['A1'] = 56
+# sheet['A2'] = 43
+
+# now = time.strftime("%x")
+# sheet['A3'] = now
 
 book.save("sample.xlsx")
 
