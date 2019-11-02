@@ -56,7 +56,15 @@ for u in letter_urls:
 
 print( country_urls ) # print the parsed data of html
 
+print( len(country_urls) )
+
+del( country_urls[-7] )
+
 for url in country_urls:
+
+    # print(url)
+
+    # print(index)
 
     html_content2 = requests.get( url ).text
 
@@ -93,9 +101,12 @@ for url in country_urls:
             # print( tds )
 
             # for td in tds:
-            record = (tds[0].text,tds[1].text, tds[2].text, tds[3].text, tds[4].text, country_element.text, None, None, None, None, None )
-            rows.append( record )
+            try:
+                record = (tds[0].text,tds[1].text, tds[2].text, tds[3].text, tds[4].text, country_element.text, None, None, None, None, None )
+                rows.append( record )
                 # print( td.text )
+            except IndexError:
+                continue
     
     for row in rows:
         sheet.append(row)
@@ -110,7 +121,10 @@ for url in country_urls:
 # now = time.strftime("%x")
 # sheet['A3'] = now
 
-book.save("sample.xlsx")
+first_sheet = book.get_sheet_by_name('Sheet')
+book.remove_sheet(first_sheet)
+
+book.save("BankSwift.xlsx")
 
     
 
