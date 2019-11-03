@@ -101,12 +101,13 @@ for url in country_urls:
             # print( tds )
 
             # for td in tds:
-            try:
-                record = (tds[0].text,tds[1].text, tds[2].text, tds[3].text, tds[4].text, country_element.text, None, None, None, None, None )
-                rows.append( record )
-                # print( td.text )
-            except IndexError:
-                continue
+            if country_element.text is not None:
+                try:
+                    record = (tds[0].text,tds[1].text, tds[2].text, tds[3].text, tds[4].text, country_element.text, None, None, None, None, None )
+                    rows.append( record )
+                    # print( td.text )
+                except IndexError:
+                    continue
     
     for row in rows:
         sheet.append(row)
@@ -123,6 +124,9 @@ for url in country_urls:
 
 first_sheet = book.get_sheet_by_name('Sheet')
 book.remove_sheet(first_sheet)
+
+sec_sheet = book.get_sheet_by_name('Eritrea1')
+book.remove_sheet(sec_sheet)
 
 book.save("BankSwift.xlsx")
 
